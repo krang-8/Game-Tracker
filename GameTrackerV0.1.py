@@ -5,6 +5,7 @@ from discord.ext import commands
 from Screenshot import Screenshot_Clipping
 from selenium import webdriver
 import time
+from PIL import Image
 
 
 headers = {
@@ -63,9 +64,14 @@ def screenshotMatchpage(match):
     url = match
     driver.get(url)
     time.sleep(1)
+    submit_button = driver.find_elements_by_xpath('/html/body/div[1]/div/div/div/div[2]/div[2]/div[1]/button[2]')[0]
+    submit_button.click()
     img_url = ob.full_Screenshot(driver, save_path=r'C:\Users\krang\Desktop\matches', image_name='Myimage.png')
     driver.close()
     driver.quit()
+    im = Image.open(r'C:\Users\krang\Desktop\matches\myImage.png')
+    cropped = im.crop((0, 150, 928, 600))
+    cropped.save(r'C:\Users\krang\Desktop\matches\myImage.png')
 
 client = discord.Client()
 
