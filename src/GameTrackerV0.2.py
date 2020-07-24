@@ -10,7 +10,7 @@ from PIL import Image
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer c5c95723-fbbe-45a3-b512-41a18c1acac4',
+        'Authorization': 'Bearer FACEITapiKEY',
     }
 
 params = (
@@ -90,4 +90,4 @@ async def on_ready():
                 postedMatches.append(match)
         time.sleep(60)
 
-client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.aTJAi5SCkEb_is0bNoARIuyXy2g")
+client.run("discordAPIKEY")
