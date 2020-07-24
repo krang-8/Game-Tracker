@@ -10,7 +10,7 @@ from PIL import Image
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer c5c95723-fbbe-45a3-b512-41a18c1acac4',
+        'Authorization': 'Bearer FACEITapiKEY',
     }
 
 params = (
@@ -95,4 +95,4 @@ async def on_message(message):
     if message.content.find("!hello") != -1:
         await message.channel.send("Hi") # If the user says !hello we will send back hi
 
-client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxn4gQ.bzkJIP25cORpqM0VvmhfwJGkK2o")
+client.run("discordAPIKEY")
