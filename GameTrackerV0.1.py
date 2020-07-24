@@ -75,15 +75,21 @@ def screenshotMatchpage(match):
 
 client = discord.Client()
 
+postedMatches = []
+
+
 @client.event
 async def on_message(message):
+
 
     if message.content.find("!matches") != -1:
         matchList = liveGames(headers,params)
         for match in matchList:
-            await message.channel.send(match)
-            screenshotMatchpage(match)
-            await message.channel.send(file=discord.File(r'C:\Users\krang\Desktop\matches\Myimage.png'))
+            if match not in postedMatches:
+                await message.channel.send(match)
+                screenshotMatchpage(match)
+                await message.channel.send(file=discord.File(r'C:\Users\krang\Desktop\matches\Myimage.png'))
+                postedMatches.append(match)
 
 
     if message.content.find("!hello") != -1:
