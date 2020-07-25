@@ -10,7 +10,7 @@ from PIL import Image
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer c5c95723-fbbe-45a3-b512-41a18c1acac4',
+        'Authorization': 'Bearer faceitAPIKEY',
     }
 
 params = (
@@ -127,6 +127,6 @@ async def on_ready():
                 # else, delete message from discord
         time.sleep(60)
 
-client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.LqkEKucCEq-F3fPCki5W_Q7_L44")
+client.run("discordAPIKEY)
 
 
