@@ -8,7 +8,7 @@ import time
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer FACEITAPIKEY',
+        'Authorization': 'Bearer bf827f19-b366-45ae-b98d-a78eed9acfa5',
     }
 
 params = (
@@ -17,38 +17,30 @@ params = (
         ('limit', '20'),
     )
 
-def liveGames(headers,params):
+def liveGames(headers,params,hub):
 
-
-    hubList = ['bed6a13f-6aa3-4d01-839f-b83a9d26c589', '627e10d3-00ac-4376-9f62-a22812e220b1',
-               'e244b64a-2a54-43a2-8a0e-df2380a8c1cc', 'e7ee1bc8-2be1-4512-955e-5542daae4152',
-               '73b8f93e-6a49-4abd-90e7-71caa4735c04', '89b35fc4-cc30-4966-842e-9d5d3a47d09c']
 
     matchList = []
 
+    requestURL = 'https://open.faceit.com/data/v4/hubs/' + hub + '/matches'
+    response = requests.get(requestURL, headers=headers, params=params)
+    matchDeets = response.json()
+    packageName = "items"
+    gameRoom = "match_id"
+    players = ""
 
-    for hub in hubList:
-
-        requestURL = 'https://open.faceit.com/data/v4/hubs/' + hub + '/matches'
-        response = requests.get(requestURL, headers=headers, params=params)
-        matchDeets = response.json()
-        packageName = "items"
-        gameRoom = "match_id"
-        players = ""
-
-        matchPackage = json.dumps(matchDeets, indent = 2)
-        testVar = True
-        COUNTER = 0
-        while testVar != False:
-            try:
-                matchPackage = json.dumps(matchDeets[packageName][COUNTER][gameRoom])
-                matchLink = "https://www.faceit.com/en/csgo/room/"+matchPackage
-                fixedMatchLink = matchLink.replace('"', '')
-                if fixedMatchLink not in matchList :
-                    matchList.append(fixedMatchLink)
-                COUNTER += 1
-            except:
-                testVar = False
+    testVar = True
+    COUNTER = 0
+    while testVar != False:
+        try:
+            matchPackage = json.dumps(matchDeets[packageName][COUNTER][gameRoom])
+            matchLink = "https://www.faceit.com/en/csgo/room/"+matchPackage
+            fixedMatchLink = matchLink.replace('"', '')
+            if fixedMatchLink not in matchList :
+                matchList.append(fixedMatchLink)
+            COUNTER += 1
+        except:
+            testVar = False
 
 
     return matchList
@@ -104,12 +96,26 @@ def checkMatch(match):
     statusRequestsURL = 'https://open.faceit.com/data/v4/matches/' + match[36:]
     requestStatus = requests.get(statusRequestsURL, headers = headers)
     statusDeets = requestStatus.json()
+    hubID = json.dumps(statusDeets['competition_id'], indent=2).replace('"','')
     status = json.dumps(statusDeets['status'], indent=2)
-    return status
+    return status, hubID
 
 
+def determineChannel(hub):
+    if hub == "627e10d3-00ac-4376-9f62-a22812e220b1":
+        channelID = client.get_channel(735918664053948478)
+        channelID2 = 735918664053948478
+    elif hub == "e244b64a-2a54-43a2-8a0e-df2380a8c1cc":
+        channelID = client.get_channel(736603132796076212)
+        channelID2 = 736603132796076212
+    else:
+        channelID = client.get_channel(736741005713342485)
+        channelID2 = 736741005713342485
+
+    return channelID, channelID2
 
 matchDictionary = {}
+
 
 def getMessageID(matchDictionary, match):
     ID = matchDictionary[match]
@@ -117,33 +123,39 @@ def getMessageID(matchDictionary, match):
 
 @client.event
 async def on_ready():
-    channelID = client.get_channel(735918664053948478)
+    hubList = ['bed6a13f-6aa3-4d01-839f-b83a9d26c589', '627e10d3-00ac-4376-9f62-a22812e220b1',
+               'e244b64a-2a54-43a2-8a0e-df2380a8c1cc', 'e7ee1bc8-2be1-4512-955e-5542daae4152',
+               '73b8f93e-6a49-4abd-90e7-71caa4735c04', '89b35fc4-cc30-4966-842e-9d5d3a47d09c']
+
     while True:
-        matchList= liveGames(headers,params)
-        for match in matchList:
-            map = getMap(match)
-            if map != None:
-                map = map.replace('"','').replace('[','').replace(']','')
-                if match not in postedMatches:
-                    playerList1,playerList2 = getPlayers(match)
-                    embed = makeEmbed(playerList1,playerList2,match,map)
-                    embedMSG = await channelID.send(embed=embed)
-                    embedID = embedMSG.id
-                    postedMatches.append(match)
-                    matchDictionary[match] = embedID
+        for hub in hubList:
+            matchList= liveGames(headers,params,hub)
+            channelID, channelID2 = determineChannel(hub)
+            for match in matchList:
+                map = getMap(match)
+                if map != None:
+                    if match not in postedMatches:
+                        playerList1,playerList2 = getPlayers(match)
+                        map = map.replace('"', '').replace('[', '').replace(']', '')
+                        embed = makeEmbed(playerList1,playerList2,match,map)
+                        embedMSG = await channelID.send(embed=embed)
+                        embedID = embedMSG.id
+                        postedMatches.append(match)
+                        matchDictionary[match] = embedID
+                    for game in postedMatches:
+                        status,hubID = checkMatch(game)
+                        if status == '"CANCELLED"' or status == '"FINISHED"':
+                            ID = getMessageID(matchDictionary,game)
+                            IDChannel, IDChannel2 = determineChannel(hubID)
+                            print(ID)
+                            print(game)
+                            await client.http.delete_message(IDChannel2, ID)
+                            postedMatches.remove(game)
+                            matchDictionary.pop(game)
 
-                ### Following else statement will be implemented later, it is about deleting messages of matches that are no longer ongoing.
-                else:
-                    status = checkMatch(match)
-                    print(status)
-                    if status != '"ONGOING"' and status != '"READY"':
-                        ID = getMessageID(matchDictionary,match)
-                        print(ID)
-                        await client.http.delete_message(735918664053948478, ID)
-                        postedMatches.remove(match)
 
 
+client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.AoSA2eIkc9s1Z4bLIyUH6TIuZH4")
 
-client.run("DISCORDAPIKEY")
 
 
