@@ -8,7 +8,7 @@ import time
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer 7fdd9053-5edf-49c0-979c-91bd78d34c46',
+        'Authorization': 'Bearer FACEITAPIKEY',
     }
 
 params = (
@@ -144,6 +144,6 @@ async def on_ready():
 
 
 
-client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.l2inoxr2tUIpaMTHAPdI-C9_blI")
+client.run("DISCORDAPIKEY")
 
 
