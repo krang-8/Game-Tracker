@@ -8,7 +8,7 @@ import time
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer faceitAPIKEY',
+        'Authorization': 'Bearer 7fdd9053-5edf-49c0-979c-91bd78d34c46',
     }
 
 params = (
@@ -100,8 +100,20 @@ def makeEmbed(playerList1,playerList2, match, map):
     return embed
 
 
+def checkMatch(match):
+    statusRequestsURL = 'https://open.faceit.com/data/v4/matches/' + match[36:]
+    requestStatus = requests.get(statusRequestsURL, headers = headers)
+    statusDeets = requestStatus.json()
+    status = json.dumps(statusDeets['status'], indent=2)
+    return status
 
 
+
+matchDictionary = {}
+
+def getMessageID(matchDictionary, match):
+    ID = matchDictionary[match]
+    return ID
 
 @client.event
 async def on_ready():
@@ -115,14 +127,23 @@ async def on_ready():
                 if match not in postedMatches:
                     playerList1,playerList2 = getPlayers(match)
                     embed = makeEmbed(playerList1,playerList2,match,map)
-                    await channelID.send(embed=embed)
+                    embedMSG = await channelID.send(embed=embed)
+                    embedID = embedMSG.id
                     postedMatches.append(match)
-                ### Following else statement will be implemented later, it is about deleting messages of matches that are no longer ongoing.
-                #else:
-                    # check match status using API
-                    # if status is ongoing, pass
-                    # else, delete message from discord
+                    matchDictionary[match] = embedID
 
-client.run("discordAPIKEY")
+                ### Following else statement will be implemented later, it is about deleting messages of matches that are no longer ongoing.
+                else:
+                    status = checkMatch(match)
+                    print(status)
+                    if status != '"ONGOING"' and status != '"READY"':
+                        ID = getMessageID(matchDictionary,match)
+                        print(ID)
+                        await client.http.delete_message(735918664053948478, ID)
+                        postedMatches.remove(match)
+
+
+
+client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.l2inoxr2tUIpaMTHAPdI-C9_blI")
 
 
