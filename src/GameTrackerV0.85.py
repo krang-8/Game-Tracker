@@ -86,8 +86,8 @@ def getPlayers(match):
 def makeEmbed(playerList1,playerList2, match, map, eloWonA, eloLostA, eloWonB, eloLostB):
     embed = discord.Embed(title="Live Game", description=map, color=0xff5500)
     embed.set_author(name="MATCH", url=match,icon_url="https://pbs.twimg.com/profile_images/1262464144802013184/BHLstW-J_400x400.jpg")
-    embed.add_field(name="Team A" + "             ", value='**Elo: ' +'+' +eloWonA +'/' + eloLostA+'**' +'\n' +playerList1[0]+ '\n' + playerList1[1] + '\n' + playerList1[2] + '\n' + playerList1[3] + '\n' + playerList1[4], inline=True)
-    embed.add_field(name="               " + "Team B",value='**Elo: ' +'+' + eloWonB +'/'+ eloLostB+'**' +'\n' + playerList2[0] + '\n' + playerList2[1] + '\n' + playerList2[2] + '\n' + playerList2[3] + '\n' + playerList2[4], inline=True)
+    embed.add_field(name="__**Team A**__" + "             ", value='**Elo: ' +'+' +eloWonA +'/' + eloLostA+'**' +'\n' +playerList1[0]+ '\n' + playerList1[1] + '\n' + playerList1[2] + '\n' + playerList1[3] + '\n' + playerList1[4], inline=True)
+    embed.add_field(name="               " + "__**Team B**__",value='**Elo: ' +'+' + eloWonB +'/'+ eloLostB+'**' +'\n' + playerList2[0] + '\n' + playerList2[1] + '\n' + playerList2[2] + '\n' + playerList2[3] + '\n' + playerList2[4], inline=True)
     embed.set_footer(text="MESL Tracker made by Krang")
     embed.set_image(url='https://media.discordapp.net/attachments/735918664053948478/736380111665889350/Webp.net-resizeimage_13.png')
     return embed
