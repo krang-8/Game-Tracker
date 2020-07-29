@@ -10,7 +10,7 @@ client = commands.Bot(command_prefix = ".")
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer FACEIT APIKEY',
+        'Authorization': 'Bearer FACEIT API KEY',
     }
 
 params = (
@@ -24,6 +24,17 @@ params = (
 playerList1 = []
 playerList2 = []
 
+
+levelDic = { '1' : 'https://media.discordapp.net/attachments/736790825123708948/736938274664218700/images-removebg-preview.png', '2' : 'https://media.discordapp.net/attachments/736790825123708948/736938276354523146/images__1_-removebg-preview.png',
+             '3' : 'https://media.discordapp.net/attachments/736790825123708948/736938261716664350/images__2_-removebg-preview.png', '4' : 'https://media.discordapp.net/attachments/736790825123708948/736938264157487154/download-removebg-preview_1.png',
+             '5' : 'https://media.discordapp.net/attachments/736790825123708948/736938265873219644/images__3_-removebg-preview.png', '6' : 'https://media.discordapp.net/attachments/736790825123708948/736938267051819039/download__2_-removebg-preview.png',
+             '7' : 'https://media.discordapp.net/attachments/736790825123708948/736938268855238666/download__3_-removebg-preview.png', '8' :'https://media.discordapp.net/attachments/736790825123708948/736938270197284986/images__4_-removebg-preview.png',
+             '9' : 'https://media.discordapp.net/attachments/736790825123708948/736938271678136400/download__1_-removebg-preview.png', '10' : 'https://media.discordapp.net/attachments/736790825123708948/736938274333130822/ap_550x550_12x12_1_transparent_t-removebg-preview.png'}
+
+levels = ['1','2','3','4','5','6','7','8','9','10']
+
+
+colourDic = { '1' : 0xeeeded , '2' : 0x27e10e , '3' : 0x27e10e, '4' : 0xf9f10b, '5' : 0xf9f10b, '6' : 0xf9f10b, '7' : 0xf9f10b, '8' :0xca6302, '9' : 0xca6302, '10' :0xe90101}
 
 def getPlayerID(username):
     requestPlayerURL = 'https://open.faceit.com/data/v4/players?nickname='+username+'&game=COUNTER%20STRIKE%3A%20GLOBAL%20OFFENSIVE'
@@ -65,64 +76,23 @@ def makePlayerEmbed(colour,kd,elo,img,winrate,username):
 async def stats(ctx, *,arg=None):
 
     if ctx.channel.id == 737212408489181265:
-        if arg ==None:
+        if arg == None:
             await ctx.channel.send("You forgot to enter a username")
         else:
             try:
                 kd,elo,level,winrate = getPlayerStats(arg)
-                if level == 1 :
-                    img = 'https://media.discordapp.net/attachments/736790825123708948/736938274664218700/images-removebg-preview.png'
-                    playerEmbed =makePlayerEmbed(0xeeeded,kd,elo,img,winrate,arg)
-                    await ctx.channel.send(embed=playerEmbed)
-                elif level == '2' or level == '3' :
-                    if level == '2' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938276354523146/images__1_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0x27e10e, kd, elo, img, winrate, arg)
+                for lvl in levels:
+                    if level == lvl:
+                        img = levelDic[lvl]
+                        colour = colourDic[lvl]
+                        playerEmbed = makePlayerEmbed(colour, kd, elo, img, winrate, arg)
+                        await ctx.channel.send(embed=playerEmbed)
+            except:
+                await ctx.channel.send('No player exists with username ' + arg)
 
-                    elif level =='3' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938261716664350/images__2_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0x27e10e,kd,elo,img,winrate,arg)
-
-                    await ctx.channel.send(embed=playerEmbed)
-
-                elif level =='4' or level == '5' or level == '6' or level == '7':
-                    if level == '4' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938264157487154/download-removebg-preview_1.png'
-                        playerEmbed = makePlayerEmbed(0xf9f10b, kd, elo, img, winrate, arg)
-
-                    elif level == '5' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938265873219644/images__3_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0xf9f10b, kd, elo, img, winrate, arg)
-
-                    elif level == '6' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938267051819039/download__2_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0xf9f10b, kd, elo, img, winrate, arg)
-
-                    elif level == '7' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938268855238666/download__3_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0xf9f10b, kd, elo, img, winrate, arg)
-
-                    await ctx.channel.send(embed=playerEmbed)
-
-                elif level == '8' or level == '9' :
-                    if level == '8' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938270197284986/images__4_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0xca6302, kd, elo, img, winrate, arg)
-                    elif level == '9' :
-                        img = 'https://media.discordapp.net/attachments/736790825123708948/736938271678136400/download__1_-removebg-preview.png'
-                        playerEmbed = makePlayerEmbed(0xca6302, kd, elo, img, winrate, arg)
-
-                    await ctx.channel.send(embed=playerEmbed)
-
-                elif level == '10' :
-                    img = 'https://media.discordapp.net/attachments/736790825123708948/736938274333130822/ap_550x550_12x12_1_transparent_t-removebg-preview.png'
-                    playerEmbed = makePlayerEmbed(0xe90101, kd, elo, img, winrate, arg)
-                    await ctx.channel.send(embed=playerEmbed)
-            except :
-                await ctx.channel.send('No player exists with username ' + str(arg))
     else:
         await ctx.channel.send("Please use the stats channel to use this command")
 
 
-client.run("DiscordAPIKEY")
+client.run("Discord API KEY")
 

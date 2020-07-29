@@ -2,13 +2,13 @@ import requests
 import json
 import discord
 from discord.ext import commands
-import time
+import math
 
 
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer FACEITAPIKEY',
+        'Authorization': 'Bearer FACEIT API KEY',
     }
 
 params = (
@@ -81,11 +81,13 @@ def getPlayers(match):
     return playerList1,playerList2
 
 
-def makeEmbed(playerList1,playerList2, match, map):
+
+
+def makeEmbed(playerList1,playerList2, match, map, eloWonA, eloLostA, eloWonB, eloLostB):
     embed = discord.Embed(title="Live Game", description=map, color=0xff5500)
     embed.set_author(name="MATCH", url=match,icon_url="https://pbs.twimg.com/profile_images/1262464144802013184/BHLstW-J_400x400.jpg")
-    embed.add_field(name="Team A" + "             ",value=playerList1[0] + '\n' + playerList1[1] + '\n' + playerList1[2] + '\n' + playerList1[3] + '\n' + playerList1[4], inline=True)
-    embed.add_field(name="               " + "Team B",value=playerList2[0] + '\n' + playerList2[1] + '\n' + playerList2[2] + '\n' + playerList2[3] + '\n' + playerList2[4], inline=True)
+    embed.add_field(name="Team A" + "             ", value='**Elo: ' +'+' +eloWonA +'/' + eloLostA+'**' +'\n' +playerList1[0]+ '\n' + playerList1[1] + '\n' + playerList1[2] + '\n' + playerList1[3] + '\n' + playerList1[4], inline=True)
+    embed.add_field(name="               " + "Team B",value='**Elo: ' +'+' + eloWonB +'/'+ eloLostB+'**' +'\n' + playerList2[0] + '\n' + playerList2[1] + '\n' + playerList2[2] + '\n' + playerList2[3] + '\n' + playerList2[4], inline=True)
     embed.set_footer(text="MESL Tracker made by Krang")
     embed.set_image(url='https://media.discordapp.net/attachments/735918664053948478/736380111665889350/Webp.net-resizeimage_13.png')
     return embed
@@ -113,7 +115,6 @@ def checkMatch(match):
     except:
         return None, None, None
 
-
 def determineChannel(hub):
     if hub == "627e10d3-00ac-4376-9f62-a22812e220b1":
         channelID = client.get_channel(737047691741102160)
@@ -132,6 +133,7 @@ def determineChannel(hub):
         channelID2 = 737047813950799942
 
     return channelID, channelID2
+
 
 matchDictionary = {}
 
@@ -177,13 +179,42 @@ def makePlayerEmbed(colour,kd,elo,img,winrate,username):
     playerEmbed = discord.Embed(title="  ", description="Elo : "+elo, color=colour)
     playerEmbed.set_thumbnail(url="https://cdn-images-1.medium.com/max/816/1*PwN-Y2RzTdVo2e2wlPv0SQ@2x.png")
     playerEmbed.set_author(name=username+"'s stats",url="https://www.faceit.com/en/players/"+username, icon_url = img)
-
     playerEmbed.add_field(name="Average K/D", value=kd, inline=True)
     playerEmbed.add_field(name="Win Rate %", value=winrate.replace('"','')+"%", inline=True)
     playerEmbed.set_footer(text="Faceit Stats Tracker by Krang")
     return playerEmbed
 
 
+def calculateElo(playerList1,playerList2):
+    totalEloA = 0
+    totalEloB = 0
+
+    for player in playerList1:
+        requestPlayerURL = 'https://open.faceit.com/data/v4/players?nickname=' + player.replace('"', '') + '&game=COUNTER%20STRIKE%3A%20GLOBAL%20OFFENSIVE'
+        requestPlayerStats = requests.get(requestPlayerURL, headers=headers)
+        statDeets = requestPlayerStats.json()
+        playerElo = int(json.dumps(statDeets['games']['csgo']['faceit_elo'], indent=2).replace('"', ''))
+        totalEloA += playerElo
+        avgEloA = totalEloA / 5
+
+    for player in playerList2:
+        requestPlayerURL = 'https://open.faceit.com/data/v4/players?nickname=' + player.replace('"', '') + '&game=COUNTER%20STRIKE%3A%20GLOBAL%20OFFENSIVE'
+        requestPlayerStats = requests.get(requestPlayerURL, headers=headers)
+        statDeets = requestPlayerStats.json()
+        playerElo = int(json.dumps(statDeets['games']['csgo']['faceit_elo'], indent=2).replace('"', ''))
+        totalEloB += playerElo
+        avgEloB = totalEloB /5
+
+    eloDiff = avgEloB - avgEloA
+    percent = 1 / (1 + math.pow(10, eloDiff / 400))
+
+    eloWonA = round(50 * (1 - percent))
+    eloLostA = round(50 * (0 - percent))
+
+    eloLostB = -(round(50 * (1 - percent)))
+    eloWonB = -(round(50 * (0 - percent)))
+
+    return str(eloWonA), str(eloLostA), str(eloWonB), str(eloLostB)
 
 
 @client.command()
@@ -208,13 +239,14 @@ async def yalla(ctx):
                             status, hubID, map = checkMatch(match)
                             if status != '"CANCELLED"' and status != '"FINISHED"' and map != None and match not in postedMatches:
                                 playerList1, playerList2 = getPlayers(match)
+                                eloWonA, eloLostA, eloWonB, eloLostB = calculateElo(playerList1,playerList2)
                                 map = map.replace('"', '').replace('[', '').replace(']', '')
-                                embed = makeEmbed(playerList1, playerList2, match, map)
+                                embed = makeEmbed(playerList1, playerList2, match, map, eloWonA, eloLostA, eloWonB, eloLostB)
                                 embedMSG = await channelID.send(embed=embed)
                                 embedID = embedMSG.id
                                 postedMatches.append(match)
                                 matchDictionary[match] = embedID
-                                print('POSTED ' + str(embedID) + ' + ' + match + ' + ' + status + ' to ' + str(channelID))
+
 
                     for game in postedMatches:
                         status, hubID, map = checkMatch(game)
@@ -224,14 +256,16 @@ async def yalla(ctx):
                             await client.http.delete_message(IDChannel2, ID)
                             postedMatches.remove(game)
                             matchDictionary.pop(game)
-                            print('DELETED ' + ':' + str(ID) + ' + ' + game + ' + ' + status + ' from ' + str(IDChannel))
+                            await logChannel.send('DELETED ' + ':' + str(ID) + ' + ' + game + ' + ' + status + ' from ' + str(IDChannel))
 
                     loopCount += 1
             except:
                 continue
 
 
-client.run("DISCORDAPIKEY")
+
+
+client.run("DISCORD API KEY")
 
 
 
