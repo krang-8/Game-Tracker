@@ -8,7 +8,7 @@ import math
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer 9d1d6cd1-ddea-40d9-b381-9549c774861a',
+        'Authorization': 'Bearer faceitAPIKEY',
     }
 
 params = (
@@ -268,7 +268,7 @@ async def yalla(ctx):
 
 
 
-client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.iS-6pSFim6gRA96LeSG2_nGFT70")
+client.run("discordAPIKEY")
 
 
 
