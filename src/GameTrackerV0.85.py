@@ -8,7 +8,7 @@ import math
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer FACEIT API KEY',
+        'Authorization': 'Bearer 9d1d6cd1-ddea-40d9-b381-9549c774861a',
     }
 
 params = (
@@ -119,9 +119,12 @@ def determineChannel(hub):
     if hub == "627e10d3-00ac-4376-9f62-a22812e220b1":
         channelID = client.get_channel(737047691741102160)
         channelID2 = 737047691741102160
-    elif hub == "e244b64a-2a54-43a2-8a0e-df2380a8c1cc" or hub == "210f559a-1140-46d6-8442-def647daad5d":
+    elif hub == "e244b64a-2a54-43a2-8a0e-df2380a8c1cc" :
         channelID = client.get_channel(737047648993017967)
         channelID2 = 737047648993017967
+    elif hub == "210f559a-1140-46d6-8442-def647daad5d":
+        channelID = client.get_channel(738998579330285580)
+        channelID2 = 738998579330285580
     elif hub == "bed6a13f-6aa3-4d01-839f-b83a9d26c589":
         channelID = client.get_channel(737047767129522238)
         channelID2 = 737047767129522238
@@ -265,7 +268,7 @@ async def yalla(ctx):
 
 
 
-client.run("DISCORD API KEY")
+client.run("NzM1OTAxMzE1MDcwMTY1MTQy.Xxm_gQ.iS-6pSFim6gRA96LeSG2_nGFT70")
 
 
 
