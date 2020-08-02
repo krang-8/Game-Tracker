@@ -116,26 +116,14 @@ def checkMatch(match):
         return None, None, None
 
 def determineChannel(hub):
-    if hub == "627e10d3-00ac-4376-9f62-a22812e220b1":
-        channelID = client.get_channel(737047691741102160)
-        channelID2 = 737047691741102160
-    elif hub == "e244b64a-2a54-43a2-8a0e-df2380a8c1cc" :
-        channelID = client.get_channel(737047648993017967)
-        channelID2 = 737047648993017967
-    elif hub == "210f559a-1140-46d6-8442-def647daad5d":
-        channelID = client.get_channel(738998579330285580)
-        channelID2 = 738998579330285580
-    elif hub == "bed6a13f-6aa3-4d01-839f-b83a9d26c589":
-        channelID = client.get_channel(737047767129522238)
-        channelID2 = 737047767129522238
-    elif hub == "73b8f93e-6a49-4abd-90e7-71caa4735c04":
-        channelID = client.get_channel(737047728734994462)
-        channelID2 = 737047728734994462
-    else:
-        channelID = client.get_channel(737047813950799942)
-        channelID2 = 737047813950799942
-
-    return channelID, channelID2
+    hubDict = {'bed6a13f-6aa3-4d01-839f-b83a9d26c589':737047767129522238, '627e10d3-00ac-4376-9f62-a22812e220b1':737047691741102160,
+               'e244b64a-2a54-43a2-8a0e-df2380a8c1cc':737047648993017967, 'e7ee1bc8-2be1-4512-955e-5542daae4152':737047813950799942,
+               '73b8f93e-6a49-4abd-90e7-71caa4735c04':737047728734994462, '89b35fc4-cc30-4966-842e-9d5d3a47d09c':737047813950799942,
+               '210f559a-1140-46d6-8442-def647daad5d':738998579330285580}
+    if hub in hubDict:
+        channelID2 = hubDict[hub]
+        channelID = client.get_channel(channelID2)
+        return channelID, channelID2
 
 
 matchDictionary = {}
