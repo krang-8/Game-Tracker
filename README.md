@@ -3,7 +3,7 @@ Discord bot that interacts with the FACEIT API to collect and publish data
 
 Current Implementations include : 
 - Able to get player stats from the API and send it in an embedded message on a discord channel
-- Automatically keeps checking hubs and looks for new matches that are ongoing, and posts an embed that includes some match details such as the matchroom link, players on each team, ELO gain/loss on a discord channel that correlates to the division/hub
+- Automatically keeps checking hubs and looks for new matches that are ongoing, and posts an embed that includes some match details (such as the matchroom link, players on each team, ELO gain/loss) on a discord channel that correlates to the division/hub
 - Stores the ongoing matches and keeps checking on when they are no longer live, then deletes the message that was posted about them.
 
 
