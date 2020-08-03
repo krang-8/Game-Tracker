@@ -10,9 +10,11 @@ Current Implementations include :
 Examples of Implementations : 
 
 Live matches embed.
+
 ![image](https://media.discordapp.net/attachments/737581188893638666/739916371655131166/unknown.png) 
 
 The following image shows both stat commands, regular one and the stats command for the past 20 games average.
+
 ![image2](https://media.discordapp.net/attachments/737581188893638666/739916722693472286/unknown.png?width=488&height=495)
 
 While this repo is public, please do not redistribute it.
