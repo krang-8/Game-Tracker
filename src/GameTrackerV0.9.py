@@ -5,18 +5,23 @@ from discord.ext import commands
 import math
 
 
-
+### api key 
 headers = {
         'accept': 'application/json',
         'Authorization': 'Bearer faceitAPIKEY',
     }
 
+## setting up params for getting game info
 params = (
         ('type', 'ongoing'),
         ('offset', '0'),
         ('limit', '20'),
     )
 
+### Function : requestMatch
+### Parameters : headers,params,hub
+### returns : matchDeets or None (returns None if it fails, still trying to figure out why it fails sometimes randomly)
+### calls the api and uses the json data to retrieve match details
 def requestMatch(headers,params,hub):
     try:
         requestURL = 'https://open.faceit.com/data/v4/hubs/' + hub + '/matches'
@@ -26,6 +31,10 @@ def requestMatch(headers,params,hub):
     except :
         return None
 
+### Function : liveGames
+### Parameters : headers,params,hub
+### returns : matchList
+### calls the api, gets the match id, concludes match link, appends the match link to an initialized matchList
 def liveGames(headers,params,hub):
 
 
@@ -57,11 +66,15 @@ def liveGames(headers,params,hub):
 
 
 
-
+## run discord bot
 client = commands.Bot(command_prefix = ".")
 
 postedMatches = []
 
+### Function : getPlayers
+### Parameters : match
+### Returns : playerList1, playerList2
+### requests player details and finds players and seperates them into 2 lists, 1 for each team/faction
 def getPlayers(match):
     teamRequestsURL = 'https://open.faceit.com/data/v4/matches/' + match[36:]
     requestMatch = requests.get(teamRequestsURL, headers = headers)
