@@ -10,7 +10,7 @@ client = commands.Bot(command_prefix = ".")
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer FACEIT API KEY',
+        'Authorization': 'Bearer FACEIT API Key',
     }
 
 params = (
@@ -56,7 +56,7 @@ def getPlayerStats(username):
         winrate = json.dumps(statDeets['lifetime']['Win Rate %'],indent=2)
         return kd,elo,level,winrate
     except :
-        return Null
+        return None
 
 
 def makePlayerEmbed(colour,kd,elo,img,winrate,username):
@@ -79,20 +79,22 @@ async def stats(ctx, *,arg=None):
         if arg == None:
             await ctx.channel.send("You forgot to enter a username")
         else:
-            try:
-                kd,elo,level,winrate = getPlayerStats(arg)
-                for lvl in levels:
-                    if level == lvl:
-                        img = levelDic[lvl]
-                        colour = colourDic[lvl]
-                        playerEmbed = makePlayerEmbed(colour, kd, elo, img, winrate, arg)
-                        await ctx.channel.send(embed=playerEmbed)
-            except:
-                await ctx.channel.send('No player exists with username ' + arg)
+            args = arg.split()
+            for name in args:
+                try:
+                    kd,elo,level,winrate = getPlayerStats(name)
+                    for lvl in levels:
+                        if level == lvl:
+                            img = levelDic[lvl]
+                            colour = colourDic[lvl]
+                            playerEmbed = makePlayerEmbed(colour, kd, elo, img, winrate, name)
+                            await ctx.channel.send(embed=playerEmbed)
+                except:
+                    await ctx.channel.send('No player exists with username ' + name)
 
     else:
         await ctx.channel.send("Please use the stats channel to use this command")
 
 
-client.run("Discord API KEY")
+client.run("Discord API Key")
 

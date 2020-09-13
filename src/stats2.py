@@ -10,7 +10,7 @@ client = commands.Bot(command_prefix = ".")
 
 headers = {
         'accept': 'application/json',
-        'Authorization': 'Bearer faceitAPIKEY',
+        'Authorization': 'Bearer FACEIT API Key',
     }
 
 params = (
@@ -78,7 +78,7 @@ def makePlayerEmbed(colour,kd,elo,img,winrate,avgKills, username):
     return playerEmbed
 
 
-def getMatch(count):
+def getMatches(playerID):
     gameList = []
     requestGamesURL = 'https://open.faceit.com/data/v4/players/' + playerID + '/history?game=csgo&offset=0&limit=20'
     requestGames = requests.get(requestGamesURL, headers=headers, params = sPar)
@@ -120,23 +120,27 @@ def getKills(username, playerID):
 @client.command()
 async def stats20(ctx, *,arg=None):
 
-    if ctx.channel.id == 736790825123708948:
+    if ctx.channel.id == 737212408489181265:
         if arg == None:
             await ctx.channel.send("You forgot to enter a username")
         else:
-                kd,elo,level,winrate,playerID = getPlayerStats(arg)
-                avgKills = getKills(arg, playerID)
+            name = arg.split()[0]
+            try:
+                kd,elo,level,winrate,playerID = getPlayerStats(name)
+                avgKills = getKills(name, playerID)
                 for lvl in levels:
                     if level == lvl:
                         img = levelDic[lvl]
                         colour = colourDic[lvl]
-                        playerEmbed = makePlayerEmbed(colour, kd, elo, img, winrate, avgKills, arg)
+                        playerEmbed = makePlayerEmbed(colour, kd, elo, img, winrate, avgKills, name)
                         await ctx.channel.send(embed=playerEmbed)
+            except:
+                await ctx.channel.send('No player exists with username ' + name)
 
 
     else:
         await ctx.channel.send("Please use the stats channel to use this command")
 
 
-client.run("discordAPIKEY")
+client.run("Discord API Key")
 
