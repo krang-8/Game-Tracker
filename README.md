@@ -1,4 +1,3 @@
-<img width="827" height="327" alt="image" src="https://github.com/user-attachments/assets/a62505f4-5378-439f-acd3-215afdc801cb" /># Game-Tracker
 Discord bot that interacts with the FACEIT API to collect and publish data
 
 Current Implementations include : 
