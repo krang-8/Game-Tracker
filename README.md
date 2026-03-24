@@ -1,4 +1,4 @@
-# Game-Tracker
+<img width="827" height="327" alt="image" src="https://github.com/user-attachments/assets/a62505f4-5378-439f-acd3-215afdc801cb" /># Game-Tracker
 Discord bot that interacts with the FACEIT API to collect and publish data
 
 Current Implementations include : 
@@ -11,10 +11,12 @@ Examples of Implementations :
 
 Live matches embed.
 
-![image](https://cdn.discordapp.com/attachments/497753249303232513/754719719059095592/unknown.png) 
+<img width="827" height="327" alt="image" src="https://github.com/user-attachments/assets/a9818759-e8e2-4a2f-949e-155e797039ee" />
+
 
 The following image shows both stat commands, regular one and the stats command for the past 20 games average.
 
-![image2](https://media.discordapp.net/attachments/737581188893638666/739916722693472286/unknown.png?width=488&height=495)
+<img width="521" height="529" alt="image" src="https://github.com/user-attachments/assets/7ad20531-3cc0-475b-97d8-9f294b03349f" />
+
 
 While this repo is public, please do not redistribute it.
